@@ -1,8 +1,6 @@
 from jes4py import *
 #1 ========================================================================================================================================
-def reflect_horizontal_1():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_horizontal_1(source):
     mirrorPoint = getWidth(source) / 2
     width = getWidth(source)
     for y in range(0,getHeight(source)):
@@ -11,11 +9,9 @@ def reflect_horizontal_1():
             rightPixel = getPixel(source,width - x - 1,y)
             color = getColor(leftPixel)
             setColor(rightPixel,color)
-    explore(source)
+    return(source)
 
-def reflect_vertical_1():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_vertical_1(source):
     mirrorPoint = getHeight(source) / 2
     height = getHeight(source)
     for x in range(0,getWidth(source)):
@@ -24,11 +20,9 @@ def reflect_vertical_1():
             bottomPixel = getPixel(source,x,y) 
             color = getColor(bottomPixel)
             setColor(topPixel,color)
-    explore(source)
+    return(source)
 
-def reflect_horizontal_2():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_horizontal_2(source):
     mirrorPoint = getWidth(source) / 2
     width = getWidth(source)
     for y in range(0,getHeight(source)):
@@ -37,11 +31,9 @@ def reflect_horizontal_2():
             rightPixel = getPixel(source,x,y)
             color = getColor(leftPixel)
             setColor(rightPixel,color)
-    explore(source)
+    return(source)
 
-def reflect_vertical_2():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_vertical_2(source):
     mirrorPoint = getHeight(source) / 2
     height = getHeight(source)
     for x in range(0,getWidth(source)):
@@ -50,14 +42,12 @@ def reflect_vertical_2():
             bottomPixel = getPixel(source,x,height - y - 1) 
             color = getColor(bottomPixel)
             setColor(topPixel,color)
-    explore(source)
+    return(source)
 
 
 
 #left to right
-def reflect_diagonal_v1_d1():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_diagonal_v1_d1(source):
     width = getWidth(source) 
     hight = getHeight(source) 
     canvas = makeEmptyPicture(width,hight)
@@ -77,14 +67,12 @@ def reflect_diagonal_v1_d1():
             elif(sourceX==sourceY): #to draw the middle line 
                 targetpix=getPixel(canvas, sourceY, sourceX) 
                 setColor(getPixel(canvas, sourceX, sourceY),color)
-    explore(canvas)
+    return(canvas)
 
 
 
 #right to left
-def reflect_diagonal_v1_d2():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_diagonal_v1_d2(source):
     width = getWidth(source) 
     hight = getHeight(source) 
     canvas = makeEmptyPicture(width,hight)
@@ -104,14 +92,12 @@ def reflect_diagonal_v1_d2():
             elif(sourceX==sourceY): #to draw the middle line 
                 targetpix=getPixel(canvas, sourceY, sourceX) 
                 setColor(getPixel(canvas, sourceX, sourceY),color)
-    explore(canvas)
+    return(canvas)
 
 
 
 #lower to upper 
-def reflect_diagonal_v2_d1():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_diagonal_v2_d1(source):
     width = getWidth(source) 
     hight = getHeight(source) 
     if(width !=hight): #only works of the size is fixed !
@@ -122,14 +108,12 @@ def reflect_diagonal_v2_d1():
             color = getColor(pixS)
             pixT= getPixel(source,sourceY,sourceX)
             setColor(pixT,color)
-    explore(source)
+    return(source)
 
 
 
 #upper to lower
-def reflect_diagonal_v2_d2():
-    file = pickAFile()
-    source = makePicture(file)
+def reflect_diagonal_v2_d2(source):
     width = getWidth(source) 
     hight = getHeight(source) 
     if(width !=hight): #only works of the size is fixed !
@@ -140,13 +124,11 @@ def reflect_diagonal_v2_d2():
             color = getColor(pixS)
             pixT= getPixel(source,width-sourceX-1,width-sourceY-1) 
             setColor(pixT,color)
-    explore(source)
+    return(source)
 
 
 
-def rotate_left():
-    file = pickAFile()
-    source = makePicture(file)
+def rotate_left(source):
     width = getWidth(source) 
     hight = getHeight(source) 
     canvas = makeEmptyPicture(width,hight)
@@ -162,13 +144,11 @@ def rotate_left():
             setColor(targetpix, color)
             targetY = targetY + 1
             targetX = targetX + 1
-    explore(canvas)
+    return(canvas)
 
 
 
-def rotate_right():
-    file = pickAFile()
-    source = makePicture(file)
+def rotate_right(source):
     width = getWidth(source) 
     hight = getHeight(source) 
     canvas = makeEmptyPicture(width,hight)
@@ -185,7 +165,7 @@ def rotate_right():
             setColor(targetpix, color)
             targetY = targetY + 1
             targetX = targetX + 1
-    explore(canvas)
+    return(canvas)
 
 #1 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 #2 ========================================================================================================================================
@@ -201,7 +181,7 @@ def smaller(src,num):
             setColor(getPixel(canvas,targetX,targetY), color)
             sourceY = sourceY + (num)
         sourceX = sourceX + (num)
-    explore(canvas)
+    return(canvas)
 
 def bigger(src,num):
     width = (getWidth(src) )
@@ -215,7 +195,7 @@ def bigger(src,num):
             setColor(getPixel(canvas,targetX,targetY), color)
             sourceY = sourceY +(1/num)
         sourceX = sourceX + (1/num)
-    explore(canvas)
+    return(canvas)
 
 def smallerPer(src,per):
     width = getWidth(src) 
@@ -231,7 +211,7 @@ def smallerPer(src,per):
             setColor(getPixel(canvas,targetX,targetY), color)
             sourceY = sourceY + (1/per)
         sourceX = sourceX + (1/per)
-    explore(canvas)
+    return(canvas)
 
 def biggerPer(src,per):
     width = getWidth(src) 
@@ -247,7 +227,7 @@ def biggerPer(src,per):
             setColor(getPixel(canvas,targetX,targetY), color)
             sourceY = sourceY + (1/per)
         sourceX = sourceX + (1/per)
-    explore(canvas)
+    return(canvas)
 
 #2 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 #3 ========================================================================================================================================
@@ -261,3 +241,96 @@ def biggerPer(src,per):
 
 
 #4 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+#5 ========================================================================================================================================
+
+def luminance(pixel):
+    r = getRed(pixel)
+    g = getGreen(pixel)
+    b = getBlue(pixel)
+    return (r + g + b) / 3
+
+
+def edgedetection_tlbr(source):
+    for y in range(getHeight(source) - 1):
+        for x in range(getWidth(source) - 1):
+            topleft = getPixel(source, x, y)
+            bottom_right = getPixel(source, x + 1, y + 1)
+            top_left_lum = luminance(topleft)
+            bottom_right_lum = luminance(bottom_right)
+            tlC= makeColor(top_left_lum,top_left_lum,top_left_lum)
+            brC = makeColor(bottom_right_lum,bottom_right_lum,bottom_right_lum)
+            d=distance(tlC,brC)
+            if (d > 10):
+                setColor(topleft, black)
+            else:
+                setColor(topleft, white)
+    addText(source,20,10,"THIS EDGE IS TOP-LEFT BUTTOM-RIGHT",acolor=makeColor(255,0,0))
+    return(source)
+
+
+def edge_detection_lr(source):
+    for y in range(getHeight(source)):
+        for x in range(getWidth(source) - 1):
+            left = getPixel(source, x, y)
+            right = getPixel(source, x + 1, y)
+            left_lum = luminance(left)
+            right_lum = luminance(right)
+            leftC= makeColor(left_lum,left_lum,left_lum)
+            rightC= makeColor(right_lum,right_lum,right_lum)
+            d=distance(leftC,rightC)
+            if (d > 10):
+                setColor(left, black)
+            else:
+                setColor(left, white)
+    addText(source,20,10,"THIS EDGE IS LEFT RIGHT",acolor=makeColor(255,0,0))
+    return(source)
+
+
+def edge_detection_tb(source):
+    for x in range(getWidth(source)):
+        for y in range(getHeight(source) - 1):
+            top = getPixel(source, x, y)
+            bottom = getPixel(source, x, y + 1)
+            top_lum = luminance(top)
+            bottom_lum = luminance(bottom)
+            topC = makeColor(top_lum,top_lum,top_lum)
+            botC = makeColor(bottom_lum,bottom_lum,bottom_lum)
+            d=distance(botC,topC)
+            if (d > 10):
+                setColor(top, black)
+            else:
+                setColor(top, white)
+    addText(source,20,10,"THIS EDGE IS TOP BUTTOM",acolor=makeColor(255,0,0))
+    return(source)
+
+
+def background(image,oldBackGround,newBackGround,t):
+    for px in getPixels(image):
+        x = getX(px)
+        y = getY(px)
+        bgPx = getPixel(oldBackGround,x,y)
+        pxC = getColor(px)
+        bgC = getColor(bgPx)
+        d = distance(pxC,bgC)
+        if (d<t):
+            newC=getColor(getPixel(newBackGround,x,y))
+            setColor(px,newC)
+    return(image)
+
+
+def foreground(image,oldBackGround,newBackGround,t):
+    for px in getPixels(image):
+        x = getX(px)
+        y = getY(px)
+        bgPx = getPixel(oldBackGround,x,y)
+        pxC = getColor(px)
+        bgC = getColor(bgPx)
+        d = distance(pxC,bgC)
+        if (d>t): #changes start from here ...
+            newC=getColor(px) 
+            target = getPixel(newBackGround,x,y)
+            setColor(target,newC)
+    return(newBackGround)
+
+#5 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
