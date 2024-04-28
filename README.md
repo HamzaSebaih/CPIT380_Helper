@@ -22,7 +22,7 @@ This Python code utilizes the `jes4py` library to perform various image manipula
 - **Resizing:**
   - `smaller(src, num)`: Shrinks the image by a factor of `num`.
   - `bigger(src, num)`: Enlarges the image by a factor of `num`.
-  - `smallerPer(src, per)`: Shrinks the image by a percentage specified by `per` (0 to 1).
+  - `smallerPer(src, per)`: Shrinks the image by a percentage specified by `per` (0 to 100).
   - `biggerPer(src, per)`: Enlarges the image by a percentage specified by `per` (0 to 100).
 
 **Requirements:**
