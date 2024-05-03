@@ -4,7 +4,7 @@
 
 This Python code utilizes the `jes4py` library to perform various image and sound manipulation techniques.
 
-**Features:**
+**Image Features:**
 
 - **Mirroring:**
   - `reflect_horizontal_1(source)`: Creates a horizontally mirrored image (flips left to right).
@@ -33,7 +33,20 @@ This Python code utilizes the `jes4py` library to perform various image and soun
     - `background(image, oldBackground, newBackground, threshold)`: Replaces the background in an image based on a threshold value. It iterates through each pixel, compares its color to the background color in a separate image (`oldBackground`), and replaces pixels with similar colors (within the threshold) using the corresponding pixel from a new background image (`newBackground`).
     - `foreground(image, oldBackground, newBackground, threshold)`: Isolates the foreground in an image based on a threshold value. This function works similarly to `background`, but it replaces pixels with colors dissimilar (outside the threshold) to the background in the `newBackground` image.
     
-    
+
+**Sound Features:**
+
+- **Sound Copy and Manipulation:**
+  - `CreateAudioCopyWithSpace(SourceAudio: Sound) -> Sound`: Creates a copy of a Sound Object and adds some space after it, according to its sampling rate.
+  - `copy(SourceAudio: Sound, Target: Sound, StartIndex)`: Copies the source audio into the target audio, starting at the given index.
+  - `increaseVolume(Sound)`: Increases the volume of a Sound object.
+  - `SpliceSounds(Sound1: Sound, Sound2: Sound, increaseVolumeSet: bool = False) -> Sound`: Merges two Sound objects into one with an optional volume increase.
+  - `CreateAudioCopy(SourceAudio: Sound) -> Sound`: Creates a simple copy of a Sound Object.
+- **Sound Filtering:**
+  - `simpleAvrgFilter(sound_for_filter, filterSize)`: Applies a simple averaging filter to a sound object.
+  - `minFilter(sound_for_filter, filterSize)`: Applies a minimum value filter to a sound object.
+  - `maxFilter(sound_for_filter, filterSize)`: Applies a maximum value filter to a sound object.
+  - `weightedFilter_3x3(sound_for_filter, index1, index2, index3)`: Applies a weighted filter to a sound object using a 3x3 kernel with specified weights. 
 
 **Requirements:**     
 - Python 3

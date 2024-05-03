@@ -333,4 +333,123 @@ def foreground(image,oldBackGround,newBackGround,t):
     return(newBackGround)
 
 #5 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+#6 ========================================================================================================================================
+
+
+#6 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+#7 ========================================================================================================================================
+
+def CreateAudioCopyWithSpace(SourceAudio: Sound) -> Sound:
+    #create a Copy of a Sound Object and adds some space after it, according to its sampling rate
+    #This function expects a sound Object
+    AudioCopy = makeEmptySound(getLength(SourceAudio) + int(0.1 * getSamplingRate(SourceAudio)))
+    for SampleIndex in range(0,getLength(SourceAudio)):
+        SampleValue = getSampleValueAt(SourceAudio,SampleIndex)
+        setSampleValueAt(AudioCopy,SampleIndex,SampleValue)
+    
+    for SampleIndex in range(getLength(SourceAudio), getLength(AudioCopy)):
+        setSampleValueAt(AudioCopy,SampleIndex,0)
+
+    return AudioCopy
+
+def copy(SourceAudio: Sound,Target: Sound,StartIndex):
+    #this function will copy the source audio , into the target audio , starting at the given index
+    Target_index = StartIndex
+    for SampleIndex in range(0,getLength(SourceAudio)):
+        #for each sample in the audio that we want to put in the target
+        SampleValue = getSampleValueAt(SourceAudio,SampleIndex)
+        setSampleValueAt(Target,Target_index,SampleValue)
+        Target_index+=1
+
+def increaseVolume(Sound):
+    for sample in getSamples(Sound):
+        value = getSampleValue(sample)
+        setSampleValue(sample,value*4)
+    return(Sound)
+
+def SpliceSounds(Sound1: Sound,Sound2: Sound,increaseVolumeSet: bool = False) -> Sound:
+    Sound1= CreateAudioCopyWithSpace(Sound1)
+    Sound2= CreateAudioCopyWithSpace(Sound2)
+    NewSound = makeEmptySound(getLength(Sound1) + getLength(Sound2))
+    copy(Sound1,NewSound,0)
+    copy(Sound2,NewSound,getLength(Sound1))
+    NewSound=increaseVolume(NewSound)
+    if(increaseVolumeSet==True):
+        NewSound=increaseVolume(NewSound)
+    return NewSound
+
+def CreateAudioCopy(SourceAudio: Sound) -> Sound:
+    #create a Copy of a Sound Object and returns it
+    #This function expects a sound Object
+    AudioCopy = makeEmptySound(getLength(SourceAudio))
+
+    for SampleIndex in range(0,getLength(SourceAudio)):
+        SampleValue = getSampleValueAt(SourceAudio,SampleIndex)
+        setSampleValueAt(AudioCopy,SampleIndex,SampleValue)
+    
+    return AudioCopy
+
+def simpleAvrgFilter(sound_for_filter,filterSize):
+    offset = filterSize//2
+    edited_sound= CreateAudioCopy(sound_for_filter)
+    for i in range(offset,getLength(sound_for_filter) -offset):
+        sum=0
+        for k in range(-offset,offset+1):
+            val= getSampleValueAt(sound_for_filter,i+k) / filterSize
+            sum=sum+val
+        setSampleValueAt(edited_sound,i,sum)
+    sound_for_filter=edited_sound
+    return sound_for_filter
+
+def minFilter(sound_for_filter,filterSize):
+    offset = filterSize//2
+    edited_sound= CreateAudioCopy(sound_for_filter)
+    for i in range(offset,getLength(sound_for_filter) -offset):
+        min=99999999999 #reseting the min value
+        for k in range(-offset,offset+1):
+            val= getSampleValueAt(sound_for_filter,i+k)
+            if(val<min):
+                min=val
+        setSampleValueAt(edited_sound,i,min)
+    sound_for_filter=edited_sound
+    return sound_for_filter
+
+def maxFilter(sound_for_filter,filterSize):
+    offset = filterSize//2
+    edited_sound= CreateAudioCopy(sound_for_filter)
+    for i in range(offset,getLength(sound_for_filter) -offset):
+        max=0 #reseting the max value
+        for k in range(-offset,offset+1):
+            val= getSampleValueAt(sound_for_filter,i+k)
+            if(val>max):
+                max=val
+        setSampleValueAt(edited_sound,i,max)
+    sound_for_filter=edited_sound
+    return sound_for_filter
+
+def weightedFilter_3x3(sound_for_filter,index1,index2,index3):
+    list=[]
+    total=0
+    total=index1+index2+index3
+    if (total>1): #if the value is invlid show error message and end the filter 
+        print("ERROR","Please make sure the total number doesn't Exceed 1")
+        return -1
+    list.append(index1)
+    list.append(index2)
+    list.append(index3)
+    offset = 3//2
+    edited_sound= CreateAudioCopy(sound_for_filter)
+    for i in range(offset,getLength(sound_for_filter) -offset):
+        sum=0
+        weight=0
+        for k in range(-offset,offset+1):
+            val= getSampleValueAt(sound_for_filter,i+k) * list[weight] 
+            sum=sum+val
+            weight= weight+1
+        setSampleValueAt(edited_sound,i,sum)
+    sound_for_filter=edited_sound
+    return sound_for_filter
+
+#7 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
+
 
