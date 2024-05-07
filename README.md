@@ -4,6 +4,17 @@
 
 This Python code utilizes the `jes4py` library to perform various image and sound manipulation techniques.
 
+
+**Requirements:**     
+- Python 3.10.6+
+- after installing VScode open a new terminal and install `jes4py`
+- `jes4py` library (installation: `pip install jes4py` )
+
+
+**Notes:**
+- Some functions (diagonal reflection and resizing) have limitations regarding square image requirements.
+
+
 **Image Features:**
 
 - **Mirroring:**
@@ -40,7 +51,7 @@ This Python code utilizes the `jes4py` library to perform various image and soun
   - `CreateAudioCopyWithSpace(SourceAudio: Sound) -> Sound`: Creates a copy of a Sound Object and adds some space after it, according to its sampling rate.
   - `copy(SourceAudio: Sound, Target: Sound, StartIndex)`: Copies the source audio into the target audio, starting at the given index.
   - `increaseVolume(Sound)`: Increases the volume of a Sound object.
-  - `SpliceSounds(Sound1: Sound, Sound2: Sound, increaseVolumeSet: bool = False) -> Sound`: Merges two Sound objects into one with an optional volume increase.
+  - `SpliceSounds(Sound1: Sound, Sound2: Sound, increaseVolumeSet: bool = False) -> Sound`: Splice two Sound objects into one with an optional volume increase.
   - `CreateAudioCopy(SourceAudio: Sound) -> Sound`: Creates a simple copy of a Sound Object.
 - **Sound Filtering:**
   - `simpleAvrgFilter(sound_for_filter, filterSize)`: Applies a simple averaging filter to a sound object.
@@ -48,12 +59,4 @@ This Python code utilizes the `jes4py` library to perform various image and soun
   - `maxFilter(sound_for_filter, filterSize)`: Applies a maximum value filter to a sound object.
   - `weightedFilter_3x3(sound_for_filter, index1, index2, index3)`: Applies a weighted filter to a sound object using a 3x3 kernel with specified weights. 
 
-**Requirements:**     
-- Python 3
-- `jes4py` library (installation: `pip install jes4py`)
-
-
-
-**Notes:**
-- Some functions (diagonal reflection and resizing) have limitations regarding square image requirements.
 
