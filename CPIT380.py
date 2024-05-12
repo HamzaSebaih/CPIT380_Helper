@@ -522,7 +522,368 @@ def foreground(image,oldBackGround,newBackGround,t):
 
 #5 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 #6 ========================================================================================================================================
-#TODO
+def MakeGrayScaledImage(Picture:Picture) ->Picture:
+    #this function will create a grayscaled verison of the image
+    #this functino will make any turn any picture object into a grayscaled picture
+    for pixel in getPixels(Picture):
+        RedValue = getRed(pixel)
+        GreenValue = getGreen(pixel)
+        BlueValue = getBlue(pixel)
+        Luminance =  (RedValue + GreenValue + BlueValue) // 3
+        setRed(pixel,Luminance)
+        setGreen(pixel,Luminance)
+        setBlue(pixel,Luminance)
+    
+    return Picture
+
+def CreateImageCopy(Picture: Picture) -> Picture:
+     #create a copy of an image and return it
+     #this accepts a picture objects , and creates and return a copy of it
+     ImageCopy = makeEmptyPicture(getWidth(Picture),getHeight(Picture))
+
+     for x in range(0,getWidth(Picture)):
+        for y in range(0,getHeight(Picture)):
+            SourcePixel = getPixel(Picture,x,y)
+            TargetPixel = getPixel(ImageCopy,x,y)
+
+            setRed(TargetPixel,getRed(SourcePixel))
+            setGreen(TargetPixel,getRed(SourcePixel))
+            setBlue(TargetPixel,getRed(SourcePixel))
+
+     return ImageCopy
+
+def SimpleAverageFilter(Picture:Picture) -> Picture:
+    #simple average filter , 3x3
+    #this function will turn the picture into a grayscaled one, then do the filter on it
+    MakeGrayScaledImage(Picture)
+
+    ReferencePicture = CreateImageCopy(Picture)
+
+    # we have our image copy that we will apply the filter to
+
+    for x in range(1,getWidth(ReferencePicture) -1):
+        for y in range(1,getHeight(ReferencePicture) -1):
+            #x and y represent the current pixel coordinates 
+            #now We need to get the values of each pixel around it and take the sum
+            sum = 0
+
+            for i in range(-1,2):
+                for j in range(-1,2):
+                    Pixel = getPixel(ReferencePicture,x + i,y + j)
+                    PixelValue = getRed(Pixel) #since the image is grayscale , we can take any component it doesn't matter
+                    sum = sum + PixelValue
+            
+            # if we reach this line , this means we are done calculating the average of all the pixels in the 3x3 window
+            sum = sum // 9 #number of pixels to get the average
+            PicturePixel = getPixel(Picture,x,y)
+            setRed(PicturePixel,sum)
+            setGreen(PicturePixel,sum)
+            setBlue(PicturePixel,sum)
+
+    #if we reach this line , this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture,0,0,"Simple average filter (3x3) ")
+    return Picture
+
+def MedianFilter(Picture:Picture)-> Picture:
+    #Median filter , 3x3
+    #this function will turn the picture into a grayscaled one, then do the filter on it
+    MakeGrayScaledImage(Picture)
+
+    ReferencePicture = CreateImageCopy(Picture)
+    
+
+    # we have our image copy that we will apply the filter to
+
+    for x in range(1,getWidth(ReferencePicture) -1):
+        for y in range(1,getHeight(ReferencePicture) -1):
+            #x and y represent the current pixel coordinates 
+            #now We need to get the values of each pixel around it and take the sum
+            TemporaryList = []
+
+            for i in range(-1,2):
+                for j in range(-1,2):
+                    Pixel = getPixel(ReferencePicture,x + i,y + j)
+                    PixelValue = getRed(Pixel) #since the image is grayscale , we can take any component it doesn't matter
+                    TemporaryList.append(PixelValue)
+            
+            # if we reach this line , this means we are done Saving the values of all the pixels in the 3x3 window
+            
+            median = statistics.median(TemporaryList)
+
+            PicturePixel = getPixel(Picture,x,y)
+            setRed(PicturePixel,median)
+            setGreen(PicturePixel,median)
+            setBlue(PicturePixel,median)
+
+    #if we reach this line , this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture,0,0,"Median filter (3x3) ")
+    return Picture
+
+def MinFilter(Picture:Picture)-> Picture:
+    #Minimum filter , 3x3
+    #this function will turn the picture into a grayscaled one, then do the filter on it
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+    
+
+    # we have our image copy that we will apply the filter to
+
+    for x in range(1,getWidth(ReferencePicture) -1):
+        for y in range(1,getHeight(ReferencePicture) -1):
+            #x and y represent the current pixel coordinates 
+            #now We need to get the values of each pixel around it and take the sum
+            TemporaryList = []
+
+            for i in range(-1,2):
+                for j in range(-1,2):
+                    Pixel = getPixel(ReferencePicture,x + i,y + j)
+                    PixelValue = getRed(Pixel) #since the image is grayscale , we can take any component it doesn't matter
+                    TemporaryList.append(PixelValue)
+            
+            # if we reach this line , this means we are done Saving the values of all the pixels in the 3x3 window
+            
+            Min = min(TemporaryList)
+
+            PicturePixel = getPixel(Picture,x,y)
+            setRed(PicturePixel,Min)
+            setGreen(PicturePixel,Min)
+            setBlue(PicturePixel,Min)
+
+    #if we reach this line , this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture,0,0,"Minimum filter (3x3) ")
+    return Picture
+
+def MaxFilter(Picture:Picture)-> Picture:
+    #maximum filter , 3x3
+    #this function will turn the picture into a grayscaled one, then do the filter on it
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+    
+
+    # we have our image copy that we will apply the filter to
+
+    for x in range(1,getWidth(ReferencePicture) -1):
+        for y in range(1,getHeight(ReferencePicture) -1):
+            #x and y represent the current pixel coordinates 
+            #now We need to get the values of each pixel around it and take the sum
+            TemporaryList = []
+
+            for i in range(-1,2):
+                for j in range(-1,2):
+                    Pixel = getPixel(ReferencePicture,x + i,y + j)
+                    PixelValue = getRed(Pixel) #since the image is grayscale , we can take any component it doesn't matter
+                    TemporaryList.append(PixelValue)
+            
+            # if we reach this line , this means we are done Saving the values of all the pixels in the 3x3 window
+            
+            Max = max(TemporaryList)
+
+            PicturePixel = getPixel(Picture,x,y)
+            setRed(PicturePixel,Max)
+            setGreen(PicturePixel,Max)
+            setBlue(PicturePixel,Max)
+
+    #if we reach this line , this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture,0,0,"Maximum filter (3x3) ")
+    return Picture
+
+def LaplacianFilter(Picture:Picture)-> Picture:
+    # Laplacian filter, 3x3
+    #as some of them are organized row by row , and so I changed the j and i placement to move accordingly 
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+
+    # Laplacian kernel
+    L = [[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]]
+
+    for x in range(1, getWidth(ReferencePicture) - 1):
+        for y in range(1, getHeight(ReferencePicture) - 1):
+            # x and y represent the current pixel coordinates
+            # now We need to get the values of each pixel around it and apply the Laplacian filter
+            sum_L = 0
+
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    Pixel = getPixel(ReferencePicture, x + i, y + j)
+                    PixelValue = getRed(Pixel)  # since the image is grayscale, we can take any component it doesn't matter
+
+                    # Apply the Laplacian kernel
+
+                    sum_L += L[j+1][i+1] * PixelValue
+
+            # Normalize to the range 0-255
+            sum_L = min(255, max(0, sum_L))
+
+            PicturePixel = getPixel(Picture, x, y)
+            setRed(PicturePixel, sum_L)
+            setGreen(PicturePixel, sum_L)
+            setBlue(PicturePixel, sum_L)
+
+    # if we reach this line, this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture, 0, 0, "Laplacian filter (3x3) ",white)
+    return Picture
+
+def SobelFilter(Picture:Picture)-> Picture:
+    # Sobel filter, 3x3
+    #as some of them are organized row by row , and so I changed the j and i placement to move accordingly 
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+
+    # Sobel kernels
+    Sobel_x = [[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]]
+    Sobel_y = [[-1, -2, -1], [0, 0, 0], [1, 2, 1]]
+
+    for x in range(1, getWidth(ReferencePicture) - 1):
+        for y in range(1, getHeight(ReferencePicture) - 1):
+            # x and y represent the current pixel coordinates
+            # now We need to get the values of each pixel around it and apply the Sobel filter
+            sum_x = 0
+            sum_y = 0
+
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    Pixel = getPixel(ReferencePicture, x + i, y + j)
+                    PixelValue = getRed(Pixel)  # since the image is grayscale, we can take any component it doesn't matter
+
+                    # Apply the Sobel kernels
+                    sum_x += Sobel_x[i+1][j+1] * PixelValue
+                    sum_y += Sobel_y[i+1][j+1] * PixelValue
+
+            # Calculate the gradient magnitude
+            gradient_magnitude = math.sqrt(sum_x**2 + sum_y**2)
+
+            # Normalize to the range 0-255
+            gradient_magnitude = min(255, max(0, gradient_magnitude))
+
+            PicturePixel = getPixel(Picture, x, y)
+            setRed(PicturePixel, gradient_magnitude)
+            setGreen(PicturePixel, gradient_magnitude)
+            setBlue(PicturePixel, gradient_magnitude)
+
+    # if we reach this line, this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture, 0, 0, "Sobel filter (3x3) ",white)
+    return Picture
+
+def PerwittFilter(Picture:Picture)-> Picture:
+    # Perwitt filter, 3x3
+    #as some of them are organized row by row , and so I changed the j and i placement to move accordingly 
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+
+    # Perwitt kernels
+    Perwittx = [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]]
+    Perwitty = [[-1, -1, -1], [0, 0, 0], [1, 1, 1]]
+
+    for x in range(1, getWidth(ReferencePicture) - 1):
+        for y in range(1, getHeight(ReferencePicture) - 1):
+            # x and y represent the current pixel coordinates
+            # now We need to get the values of each pixel around it and apply the Perwitt filter
+            sum_x = 0
+            sum_y = 0
+
+            for i in range(-1, 2):
+                for j in range(-1, 2):
+                    Pixel = getPixel(ReferencePicture, x + i, y + j)
+                    PixelValue = getRed(Pixel)  # since the image is grayscale, we can take any component it doesn't matter
+
+                    # Apply the Perwitt kernels
+                    sum_x += Perwittx[j+1][i+1] * PixelValue
+                    sum_y += Perwitty[j+1][i+1] * PixelValue
+
+            # Calculate the gradient magnitude
+            gradient_magnitude = math.sqrt(sum_x**2 + sum_y**2)
+
+            # Normalize to the range 0-255
+            gradient_magnitude = min(255, max(0, gradient_magnitude))
+
+            PicturePixel = getPixel(Picture, x, y)
+            setRed(PicturePixel, gradient_magnitude)
+            setGreen(PicturePixel, gradient_magnitude)
+            setBlue(PicturePixel, gradient_magnitude)
+
+    # if we reach this line, this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture, 0, 0, "Perwitt filter (3x3) ",white)
+    return Picture
+
+def RobertsFilter(Picture:Picture)-> Picture:
+    # Roberts filter, 2x2
+    #important note , the organization of the columns and rows in the mask is very important 
+    #as some of them are organized row by row , and so I changed the j and i placement to move accordingly 
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+
+    # Roberts kernels
+    Rx = [[1, 0], [0, -1]]
+    Ry = [[0, 1], [-1, 0]]
+
+    for x in range(0, getWidth(ReferencePicture) - 1):
+        for y in range(0, getHeight(ReferencePicture) - 1):
+            # x and y represent the current pixel coordinates
+            # now We need to get the values of each pixel around it and apply the Roberts filter
+            sum_x = 0
+            sum_y = 0
+
+            for i in range(0, 2):
+                for j in range(0, 2):
+                    Pixel = getPixel(ReferencePicture, x + i, y + j)
+                    PixelValue = getRed(Pixel)  # since the image is grayscale, we can take any component it doesn't matter
+
+                    # Apply the Roberts kernels
+                    sum_x += Rx[j][i] * PixelValue
+                    sum_y += Ry[j][i] * PixelValue
+
+            # Calculate the gradient magnitude
+            gradient_magnitude = math.sqrt(sum_x**2 + sum_y**2)
+
+            # Normalize to the range 0-255
+            gradient_magnitude = min(255, max(0, gradient_magnitude))
+
+            PicturePixel = getPixel(Picture, x, y)
+            setRed(PicturePixel, gradient_magnitude)
+            setGreen(PicturePixel, gradient_magnitude)
+            setBlue(PicturePixel, gradient_magnitude)
+
+    # if we reach this line, this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture, 0, 0, "Roberts filter (2x2) ",white)
+    return Picture
+
+def SimpleAverageFilterGeneralized(Picture:Picture,WindowSize)-> Picture:
+    #simple average filter , generalized
+    MakeGrayScaledImage(Picture)
+    ReferencePicture = CreateImageCopy(Picture)
+
+    if (WindowSize % 2 == 0):
+        #even
+        return 
+    
+    offset = WindowSize // 2
+    #if we reach here , it means its odd
+
+    for x in range(offset,getWidth(ReferencePicture) -offset):
+        for y in range(offset,getHeight(ReferencePicture) -offset):
+            #x and y represent the current pixel coordinates 
+            #now We need to get the values of each pixel around it and take the sum
+            sum = 0
+            count_pixels = 0
+
+            for i in range(-offset,offset + 1):
+                for j in range(-offset,offset +1):
+                    Pixel = getPixel(ReferencePicture,x + i,y + j)
+                    PixelValue = getRed(Pixel) #since the image is grayscale , we can take any component it doesn't matter
+                    sum +=PixelValue
+                    count_pixels += 1
+            
+            # if we reach this line , this means we are done calculating the average of all the pixels in the 3x3 window
+            average_pixel_value  = sum / count_pixels #number of pixels to get the average
+            PicturePixel = getPixel(Picture,x,y)
+            setRed(PicturePixel,average_pixel_value)
+            setGreen(PicturePixel,average_pixel_value)
+            setBlue(PicturePixel,average_pixel_value)
+
+    #if we reach this line , this means we are done making the filtered image, now add some text and add it to the list
+    addText(Picture,0,0,"Simple average filter" + "( " + str(WindowSize) + "x " + str(WindowSize) + ")" )
+    return Picture
+
 
 #6 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 #7 ========================================================================================================================================
