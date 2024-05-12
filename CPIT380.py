@@ -1,4 +1,7 @@
 from jes4py import *
+import numpy as np
+import matplotlib.pyplot as plt
+from typing import List
 #1 ========================================================================================================================================
 def reflect_horizontal_1(source):
     mirrorPoint = getWidth(source) / 2
@@ -232,6 +235,194 @@ def biggerPer(src,per):
 #2 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 #3 ========================================================================================================================================
 #TODO
+
+def HistogramVisualize(Picture: Picture):
+    #this method will make Histogram graphs for the given picture object
+    #this process includes creating arrays for each Color channel, and filling the arrays with color values 
+    #then create the histograms graphs and show them 
+
+    #first, let's check if we already created arrays, if we did , then simply visualize them , if we didn't then create them
+
+    ArrayLength = 256
+    RedValuesArray = [0] * ArrayLength
+    GreenValuesArray = [0] * ArrayLength
+    BlueValuesArray = [0] * ArrayLength
+
+    #now we need to start looping through
+    
+    for pixel in getPixels(Picture):
+        #this will loop across every pixel in the array
+        #and adds that pixel color values to the arrays
+        
+        RedValue = getRed(pixel)
+        GreenValue = getGreen(pixel)
+        BlueValue = getBlue(pixel)
+
+        RedValuesArray[RedValue] = RedValuesArray[RedValue] + 1
+        GreenValuesArray[GreenValue] = GreenValuesArray[GreenValue] + 1
+        BlueValuesArray[BlueValue] = BlueValuesArray[BlueValue] + 1
+    
+    #if we reach this line , this means we are finished initializing the arrays
+    #here we simply need to visualize.
+    
+    XaxixArray = np.arange(256)
+    #this will create an array with values from 0 to 255
+    # Create 3 subplots (graphs)
+    fig, axs = plt.subplots(3)
+
+    # Create a bar plot for RedValues Array 
+    axs[0].bar(XaxixArray, RedValuesArray)
+    axs[0].set_title('Red Component Histogram')
+    axs[0].set_xlabel('Values')
+    axs[0].set_ylabel('Number Of Pixels')
+
+    # Create a bar plot for GreenValues Array 
+    axs[1].bar(XaxixArray, GreenValuesArray)
+    axs[1].set_title('Green Component Histogram')
+    axs[1].set_xlabel('Values')
+    axs[1].set_ylabel('Number Of Pixels')
+    
+    # Create a bar plot for BlueValues Array 
+    axs[2].bar(XaxixArray, BlueValuesArray)
+    axs[2].set_title('Blue Component Histogram')
+    axs[2].set_xlabel('Values')
+    axs[2].set_ylabel('Number Of Pixels')
+
+    # Display the plots
+    plt.tight_layout()
+    plt.show()
+
+def HistogramEquilizeNewMapping(ValuesList: List) -> List:
+    #this function is not for clients to use.
+    CumFreq = [0] * 256 #same size as ValuesList possible values
+
+    #first value in cumulitive frequency is just equal to the last value in the ValuesList list
+    CumFreq[0] = ValuesList[0]
+
+    #after that the cumulation begins
+    for i in range(1,256):
+        CumFreq[i] = CumFreq[i-1] + ValuesList[i]
+    
+    #now we are done with the first array
+    #after that we need to find the equalized histogram array
+
+    #this includes 1-taking the maximum number of values (last value in Cumlitive frequency array) , 2-dividing it by number of possible color values (array indexes which is 256) ,3- then taking what's ever left and randomly adding it to array indexes
+
+    Feq = [0] * 256 #same size as ValuesList possible values
+
+    MaximumNumberOfValues = CumFreq[255] #this is the amount of red values that we have , which are disturbuted across the possilbe color values
+
+    EachColorTakes = MaximumNumberOfValues // 256 #this is how much each color value will have pixels with the same color value
+
+    ValuesLeft = MaximumNumberOfValues % 256
+
+    for i in range(256):
+        #here we set the value of the Feq array 
+        Feq[i] = EachColorTakes
+    
+    for i in range(ValuesLeft):
+        #here we take the remaining values that we couldn't distirbute to the feq array , and we randomely distirbute them
+        randomindex = random.randint(0,255)
+        Feq[randomindex] = Feq[randomindex] + 1
+
+    #now we calcualte cumulitive for the Feq 
+
+    CumFeq = [0] * 256 #same size as Feq array
+
+    #first value in cumulitive frequency is just equal to the first value in the redvalues array
+    CumFeq[0] = Feq[0]
+
+    #after that the cumulation begins
+    for i in range(1,256):
+        CumFeq[i] = CumFeq[i-1] + Feq[i]
+    
+    #okay so when we reach this line , we are done with making : 1-cumFrequency 2- equilized frequency (Feq) 3- Cumulitive for the Equilized frequency (Feq) , now we need to obtain the mapping array
+
+    #the mapping array can be a hashset with each key representing the old color value and the value representign the new color value , or we can simply use an array with the index representing the old color value , 
+    #in order to obtain the new mapping , we look at each index (representing a certain color vaule) , then we need to find the closest value in the Cumulitive Feq to the Cumulitive frequency corresponding to the index
+    #Go back to the slides To understand
+
+    NewMapping = [0] * 256
+    #new array , same size as possilbe color values , and in each index will contain the new mapping
+
+    for i in range(256):
+        #this is how we get the new mapping array
+        #first we get the value in the Cumulitive frequency 
+        #then find the closest value in the cumfeq 
+        #then the index is the new mapping 
+        #in order to find the closest value to a certain value in an array , you can make a new array that simply contains all the differences with your value
+        #then find the lowest difference , and get its index
+        Cumulitivefrequencyvalue = CumFreq[i]
+        CumFeqV2 = np.array(CumFeq)
+
+        differences = np.abs(CumFeqV2 - Cumulitivefrequencyvalue)
+
+        closest_index = np.argmin(differences)
+
+        NewMapping[i] = closest_index
+    
+    return NewMapping
+
+def HistogramEqualize(Picture: Picture) -> Picture:
+    #Alright , in this function we will do histogram equalization , a bunch of things need to be done 
+    #we need to create new arrays which represent some stuff , after that we will need to create the new mapping 
+    #then after creating the new mapping , create the new picture using the new mapping 
+    #save the picture to the global variable for access
+
+    #steps required: 
+    #1- find cumulitve frequency , 2- Compute equalized histogram, 3-Compute the cumulative frequency of equalized histogram, 4-Design the mapping
+    ArrayLength = 256
+    RedValuesArray = [0] * ArrayLength
+    GreenValuesArray = [0] * ArrayLength
+    BlueValuesArray = [0] * ArrayLength
+
+    #now we need to start looping through
+    
+    for pixel in getPixels(Picture):
+        #this will loop across every pixel in the array
+        #and adds that pixel color values to the arrays
+        
+        RedValue = getRed(pixel)
+        GreenValue = getGreen(pixel)
+        BlueValue = getBlue(pixel)
+
+        RedValuesArray[RedValue] = RedValuesArray[RedValue] + 1
+        GreenValuesArray[GreenValue] = GreenValuesArray[GreenValue] + 1
+        BlueValuesArray[BlueValue] = BlueValuesArray[BlueValue] + 1
+    
+
+    #we will do each color arrea seperately
+    #I have made a function that takes the color values of a component 
+    #then the function does histogram equalization on the frequency of the color values array, and returns the new mapping
+
+    NewRedMapping = HistogramEquilizeNewMapping(RedValuesArray)
+    NewGreenMapping = HistogramEquilizeNewMapping(GreenValuesArray)
+    NewBlueMapping = HistogramEquilizeNewMapping(BlueValuesArray)
+
+    #here we have the new mapping , now we need to do the actuall mapping on the picture
+    #creating a an image copy that we will manipulat
+
+    for pixel in getPixels(Picture):
+        #for each pixel we will need to get the values for each component , find the corresponding new mapped value , then change the value to the mapped value
+
+        #First is red
+        Redvalue = getRed(pixel)
+        NewRedValue = NewRedMapping[Redvalue]
+        setRed(pixel,NewRedValue)
+
+        #Second is Green
+        Greenvalue = getGreen(pixel)
+        NewGreenValue = NewGreenMapping[Greenvalue]
+        setGreen(pixel,NewGreenValue)
+
+        #Third is Blue
+        BlueValue = getBlue(pixel)
+        NewBlueValue = NewBlueMapping[BlueValue]
+        setBlue(pixel,NewBlueValue)
+
+    #if we reach this line , this means we have manipulted the  image , and made it into an equilzed image
+    
+    return Picture
 
 #3 ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 #4 ========================================================================================================================================
