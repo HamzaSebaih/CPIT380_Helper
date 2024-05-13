@@ -1,1 +1,5 @@
 jes4py
+statistics
+numpy
+matplotlib
+typing
