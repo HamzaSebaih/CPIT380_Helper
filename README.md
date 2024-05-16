@@ -17,7 +17,9 @@ This Python code utilizes the `jes4py` library to perform various image and soun
 **Notes:**
 - Some functions (diagonal reflection and resizing) have limitations regarding square image requirements.
 - All filtering functions convert the image to grayscale before applying the filter. 
-- for real work I recommend using `openCV2`(for images and movies) and `Librosa` (for sounds)
+- for real work I recommend using `openCV2`(for images and movies), `Librosa` (for sounds), and `nltk` (for texts)
+- `playMovie()` and `playSound()` dosen't work in `jes4py` to use it you need to install `JES`
+
 
 **Image Features:**
 
